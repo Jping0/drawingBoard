@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/initStyle.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <title>canvas画图</title>
+    
+</head>
+<body>
+    <div class="main_box">
+        <div class="main_canvas">
+            <canvas id="mycanvas"></canvas>
+        </div>
+        
+        <div class="signature_btn">
+            <ul class="flexbox">
+                <li class="flex1">
+                    <div class="sig_cxline">
+                        <select name="" id="sib_linecx">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </li>
+                <li class="flex1">
+                    <div class="sig_colors">
+                        <input id="color_val" type="color" readonly placeholder="选择颜色">
+                    </div>
+                </li>
+                <li class="flex1">
+                    <div class="sig_bgfile">
+                        <input id="" type="file" class="upfiles" accept="image/*">
+                        <button type="button">上传背景</button>
+                    </div>
+                </li>
+            </ul>
+            
+        </div>
+        <div class="btnbox">
+            <ul class="flexbox">
+                <li class="flex1">
+                    <button id="sig_clear" type="button">清空画布</button>
+                </li>
+                <li class="flex1">
+                    <button id="save_sig" type="button">生成图片</button>
+                </li>
+            </ul>
+            
+        </div>
+        
+        <div class="create_imgs">
+            <div class="modal_bg"></div>
+            <div class="create_imgbox"></div>
+        </div>
+        
+    </div>
+
+    <script src="./js/jquery-3.2.1.js"></script>
+    <script>
+        // 记录页面在顶部是，开始滑动的位置
+        var startp={
+            x:0,
+            y:0
+        }
+        // 处理微信浏览器页面顶部下滑
+        document.body.addEventListener('touchstart', function(e) {
+            startp.x = e.touches[0].clientX;
+            startp.y = e.touches[0].clientY;
+        }, {passive: false})
+        document.body.addEventListener('touchmove', function(e) {
+            var move_x = e.touches[0].clientX;
+            var move_y = e.touches[0].clientY;
+            if(($(window).scrollTop() <=1)&&(move_y-startp.y>0)){
+                e.preventDefault();
+            }
+        }, {passive: false})
+
+        
+        window.onload = function(e){
+            var dpr = e.currentTarget.devicePixelRatio;//设备像素比
+            var winWidth,winHeight,canW,canH,can_ratio,left_W;
+            var isMB = false;//是否为移动端
+            var isOut = false;//是否超出canvas
+            var canvas = document.getElementById('mycanvas');
+            context = canvas.getContext("2d");
+
+            window.onresize = function(){
+                set_canvasWH();
+            }
+
+            function set_canvasWH(){
+                winWidth = window.innerWidth;
+                winHeight = window.innerHeight;
+                if(window.innerWidth<768){
+                    // 移动端
+                    $('.main_canvas').css({
+                        'width':winWidth,
+                        'height':winHeight*0.7
+                    })
+                    isMB = true;
+                    canW = winWidth*dpr;
+                    canH = winHeight*dpr*0.7;
+                    canvas.width = canW;
+                    canvas.height = canH;
+                }else{
+                    // PC端
+                    $('.main_canvas').css({
+                        'width':winWidth*0.9,
+                        'height':winHeight*0.9,
+                        'margin':'0 auto'
+                    })
+                    isMB = false;
+                    canW = winWidth*0.9;
+                    canH = winHeight*0.9;
+                    canvas.width = canW;
+                    canvas.height = canH;
+                    if(hasScrollbar()){
+                        // 滚动条的宽度为17px左右
+                        left_W = (window.innerWidth-17-canW)/2;
+                    }else{
+                        left_W = (window.innerWidth-canW)/2;
+                    }
+                }
+            }
+            set_canvasWH();
+            can_ratio = canvas.width/canvas.height;//canvas比例
+            
+            // 判断是否有滚动条
+            function hasScrollbar() {
+                return document.body.scrollHeight > (window.innerHeight || document.documentElement.clientHeight);
+            }
+
+            // 画图起点位置
+            var start_point = {
+                x:0,
+                y:0
+            };
+            // 画图结束点位置
+            var end_point = {
+                x:0,
+                y:0
+            }
+
+            // PC端
+            var isdraw = false;
+            canvas.onmousedown = function(e){
+                start_point.x = e.pageX-left_W;
+                start_point.y = e.pageY;
+                isdraw = true;
+            }
+            canvas.onmousemove = function(e){
+                cancelBubble(e);
+                if(isOut){
+                    if(isdraw){
+                        start_point.x = e.pageX-left_W;
+                        start_point.y = e.pageY;
+                        end_point.x = e.pageX-left_W;
+                        end_point.y = e.pageY;
+                        re_drow(start_point.x,start_point.y,end_point.x,end_point.y);
+                    }
+                }else{
+                    if(isdraw){
+                        end_point.x = e.pageX-left_W;
+                        end_point.y = e.pageY;
+                        re_drow(start_point.x,start_point.y,end_point.x,end_point.y);
+                    }
+                }
+                isOut = false;
+            }
+            canvas.onmouseup =  function(e){
+                cancelBubble(e);
+                isdraw = false;
+                start_point.x = 0;
+                start_point.y = 0;
+                end_point.x = 0;
+                end_point.y = 0;
+            }
+            window.onmouseup =  function(){
+                isdraw = false;
+            }
+            window.onmousemove = function(e){
+                // 处理边缘问题
+                if((e.pageX>canvas.width+left_W)||(e.pageX<canvas.width+left_W)||(e.pageY<0)||(e.pageY>canvas.height)){
+                    isOut = true;
+                }
+            }
+            // 阻止冒泡事件
+            function cancelBubble(e) { 
+                var evt = e ? e : window.event; 
+                if (evt.stopPropagation) {        
+                    evt.stopPropagation(); 
+                }else {   
+                    evt.cancelBubble = true; 
+                }  
+            }
+
+            // 移动端
+            // 起始位置
+            canvas.addEventListener('touchstart',function(e){
+                start_point.x = e.touches[0].clientX*dpr;
+                start_point.y = e.touches[0].clientY*dpr;
+            },false);
+            // 结束位置
+            canvas.addEventListener('touchmove',function(e){
+                end_point.x = e.touches[0].clientX*dpr;
+                end_point.y = e.touches[0].clientY*dpr;
+                re_drow(start_point.x,start_point.y,end_point.x,end_point.y);
+            },false);
+
+            var cxline = 1;//默认线条粗细
+            if(isMB){
+                // 移动端放大
+                cxline = cxline*dpr;
+            }
+            var sig_color = 'black';//默认线条颜色
+            var bgImg = new Image();//创建背景图对象
+            bgImg.src = '';
+            
+            // 绘制线条
+            function re_drow(stx,sty,endx,endy){
+                context.beginPath();
+                context.restore();
+                context.save();
+                context.lineWidth = cxline;//边框宽度
+                context.strokeStyle = sig_color;
+                context.moveTo(stx,sty);
+                context.lineTo(endx,endy);
+                context.stroke();
+                start_point.x = endx;
+                start_point.y = endy;
+                context.restore();
+                context.save();
+            }
+
+            // 清空画布
+            function clearCanvas(){
+                context.beginPath();
+                context.clearRect(0,0,canvas.width,canvas.height);
+                context.restore();
+                context.save();
+            }
+            // 上传背景图
+            $('body').on('change','.upfiles',function(){
+                var _this = $(this);
+                var file = $(this).get(0).files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload=function(e){
+                    bgImg.src = e.target.result;
+                    
+                    bgImg.onload = function(){
+                        var bg_ratio = bgImg.width/bgImg.height;//背景图比例
+                        var bgimg_w = bgImg.width*dpr;
+                        var bgimg_h = bgImg.height*dpr;
+                        var qd_x = 0,qd_y = 0,bgw = 0,bgh = 0;
+
+                        // 以画布宽度为宽度，获取背景高度
+                        var bgH =  canvas.width/bg_ratio;
+                        //以画布高度为高度，获取背景宽度
+                        var bgW = canvas.height*bg_ratio;
+
+                        if(bgH>canvas.height){
+                            qd_x = 0;
+                            qd_y = -(bgH-canvas.height)/2;
+                            bgw = canvas.width;
+                            bgh = bgH;
+                            drow_bg(qd_x,qd_y,bgw,bgh);
+                        }else if(bgH<canvas.height){
+                            qd_x = -(bgW-canvas.width)/2;
+                            qd_y = 0;
+                            bgw = bgW;
+                            bgh = canvas.height;
+                            drow_bg(qd_x,qd_y,bgw,bgh);
+                        }
+                    }
+                    _this.replaceWith('<input class="upfiles" type="file" accept="image/*">');
+                }
+            })
+            // 画入背景
+            function drow_bg(sx,sy,ew,eh){
+                context.restore();
+                context.save();
+                context.beginPath();
+                context.drawImage(bgImg, sx, sy, ew, eh);
+                context.restore();
+                context.save();
+            }
+            // 颜色
+            $('#color_val').on('input',function(){
+                sig_color = $(this).val();
+            })
+            // 粗细
+            $('#sib_linecx').on('input',function(){
+                cxline = $('#sib_linecx option:checked').val();
+            })
+            // 清空画布
+            $('#sig_clear').click(function(){
+                clearCanvas();
+            })
+
+            // 保存图片
+            $('#save_sig').click(function(){
+                var save_imgs = new Image();
+                // showImgs.setAttribute("crossOrigin",'Anonymous');
+                save_imgs.src = canvas.toDataURL("image/png");//转换图片格式
+                save_imgs.onload = function(){
+                    $('.create_imgbox').find('img').remove();
+                    $('.create_imgbox').append(save_imgs);
+                }
+                $('.create_imgs').fadeIn();
+            })
+            $('.modal_bg').click(function(){
+                $('.create_imgs').fadeOut();
+            })
+        }
+
+        
+
+        
+
+    </script>
+    
+</body>
+</html>

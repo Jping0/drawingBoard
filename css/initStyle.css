@@ -1,0 +1,181 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'microsoft yaHei', Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    word-wrap: break-word; 
+    word-break: normal; 
+    white-space: normal;
+}
+body{
+    font-family: 'microsoft yaHei', Arial, Helvetica, sans-serif;
+}
+a:link,
+a:visited,
+a:hover,
+a:active {
+    text-decoration: none;
+    color: black;
+}
+ul,
+ol,
+p {
+    margin-bottom: 0px;
+}
+li {
+    list-style: none;
+}
+h1,h2,h3,h4,h5,h6{
+    font-weight: normal;
+}
+
+input,
+button,
+select,
+textarea{
+    outline: none;
+}
+label{
+    margin: 0;
+}
+
+.clear::after {
+    content: '';
+    font-size: 0px;
+    line-height: 0px;
+    display: table;
+    clear: both;
+}
+
+.flexbox{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.flex1{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+}
+.line1{
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line2{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.line3{
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+
+.disabled {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.6;
+}
+
+input.checkboxs{
+    background-color: transparent;
+    border: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid rgb(225, 225, 225);
+    position: relative;
+    margin: 0;
+    border-radius: 3px;
+}
+input.checkboxs:focus{
+    outline: none;
+}
+
+.swiper-button-next, .swiper-button-prev{
+    outline: none;
+}
+
+/* 清除input file默认样式 */
+    input.upfiles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        border: none;
+        color: none;
+        -webkit-appearance: none;
+        opacity: 0;
+    }
+    input.upfiles::-webkit-file-upload-button {
+        border: none;
+        background-color: transparent;
+        color: transparent;
+        outline: none;
+    }
+/* 清除input file默认样式 */
+
+/* 分页导航 */
+
+    .jagy_pagenavs{
+        text-align: center;
+    }
+    .jagy_pagenavs >div,
+    .jagy_pagenavs ul,
+    .jagy_pagenavs li{
+        display: inline-block;
+    }
+    /* .jagy_pagenavs li.active a{
+        background-color
+    } */
+    .jagy_pagenavs a{
+        display: block;
+        width: 46px;
+        height: 46px;
+        line-height: 46px;
+        text-align: center;
+        border: 1px solid rgb(225, 225, 225);
+        margin: 0 6px;
+        background-color: white;
+        color: black;
+    }
+    .jagy_pagenavs a:hover,
+    .jagy_pagenavs li.active a{
+        border-color: rgb(218, 19, 37);
+        color: white;
+        background-color: rgb(218, 19, 37);
+    }
+/* 分页导航 */
+
+/* 文字两端对齐 */
+.text_qi{
+    width: 100%;
+    text-align: justify;
+}
+.text_qi::after{
+    content:"";
+    display: inline-block;
+    width:100%;
+    overflow:hidden;
+    height:0;
+}
+/* 文字两端对齐 */
+

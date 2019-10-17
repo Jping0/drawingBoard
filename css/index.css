@@ -1,0 +1,91 @@
+
+.modal_bg{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+.create_imgbox{
+    position: fixed;
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    width: 80%;
+    height: auto;
+    z-index: 101;
+    background-color: white;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.create_imgbox img{
+    max-width: 100%;
+    display: block;
+}
+.create_imgs{
+    display: none;
+}
+.sig_bgfile{
+    position: relative;
+}
+
+.sig_cxline,
+.sig_colors{
+    text-align: center;
+    
+}
+.sig_cxline select,
+.sig_colors input,
+.sig_bgfile button{
+    width: 80%;
+    padding: 0px 10px;
+    border: 1px solid rgb(205, 205, 205);
+    height: 34px;
+    line-height: 34px;
+    border-radius: 6px;
+}
+.sig_colors input{
+    background-color: white;
+}
+.sig_bgfile button{
+    background-color: skyblue;
+    border: none;
+}
+.btnbox{
+    margin-top: 10px;
+    text-align: center;
+}
+.btnbox button{
+    width: 80%;
+    height: 40px;
+    line-height: 40px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    color: white;
+}
+#sig_clear{
+    background-color: #ec1c21;
+}
+#save_sig{
+    background-color: #27bc3e;
+}
+.main_canvas{
+    position: relative;
+    /* overflow: hidden; */
+}
+.main_canvas canvas{
+    /* position: absolute; */
+    /* top: 0; */
+    /* left: 0; */
+    /* z-index: -10; */
+    width: 100% !important;
+}
+.main_canvas img{
+    max-width: 100%;
+}
+.signature_btn{
+    margin-top: 10px;
+}
